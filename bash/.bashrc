@@ -462,7 +462,7 @@ read_project_config() {
 
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 
-alias tree='tree -a -L 3'
+alias tree='tree -a '
 
 
 
