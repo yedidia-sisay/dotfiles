@@ -38,3 +38,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+
+
+
+
+-- Toggle cmdheight 0 ↔ 1
+vim.o.cmdheight = 0
+vim.keymap.set("n", "<leader>ch", function()
+  if vim.o.cmdheight == 0 then
+    vim.o.cmdheight = 1
+  else
+    vim.o.cmdheight = 0
+  end
+end, { desc = "Toggle command bar" })

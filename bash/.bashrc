@@ -121,7 +121,7 @@ fi
 
 # might also be my edits not sure
 # i could see writing this to add nvim 
-export PATH="$PATH:/opt/nvim"
+# export PATH="$PATH:/opt/nvim"
 
 
 # no idea what this are
