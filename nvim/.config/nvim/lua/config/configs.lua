@@ -6,6 +6,14 @@
 -- Beta's
 --
 
+-- Toggle statusline (0 = hidden, 2 = shown)
+vim.keymap.set("n", "<leader>b", function()
+  if vim.o.laststatus == 0 then
+    vim.o.laststatus = 2
+  else
+    vim.o.laststatus = 0
+  end
+end, { desc = "Toggle statusline" })
 
 
 
@@ -40,11 +48,25 @@ vim.api.nvim_create_autocmd("FileType", {
 
 
 
+-------------------------------
+-- status line toggle
+-- command line toggle
+--
+-- Toggle statusline (0 = hidden, 2 = shown)
+vim.keymap.set("n", "<leader>b", function()
+  if vim.o.laststatus == 0 then
+    vim.o.laststatus = 2
+  else
+    vim.o.laststatus = 0
+  end
+end, { desc = "Toggle statusline" })
+
+
 
 
 -- Toggle cmdheight 0 ↔ 1
 vim.o.cmdheight = 0
-vim.keymap.set("n", "<leader>ch", function()
+vim.keymap.set("n", "<leader>bc", function()
   if vim.o.cmdheight == 0 then
     vim.o.cmdheight = 1
   else

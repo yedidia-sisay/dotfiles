@@ -6,7 +6,10 @@ return {
   config = function()
     require("telescope").setup({
       defaults = {
-        file_ignore_patterns = {},
+        file_ignore_patterns = {
+          "^.git/",     -- ignores .git folder and everything inside
+          "%.git/",     -- also catches submodules
+        },
       },
       pickers = {
         find_files = {
