@@ -4,7 +4,6 @@
 - (nvim) ai, copilot or gemnini auto suggest (estimated time: 60m)
 - (nvim) set unwrap for markdown
 - (nvim) markdown navigation tools, something i could type and it could take me places
-- (tmux) toggle to hide the bar
 - (general)  themeing colorscheme, dark theme light theme
 
 
@@ -14,6 +13,7 @@
 - adjust telescope to ignore file inside the .git folder
 - getting a @today and @now (estimated time: 15m)
 - adjust neotree to open on file location with folder expanded
+- (tmux) toggle to hide the bar
 
 
 
@@ -33,6 +33,9 @@ i just need to clone my github
 
 ### 2025-11-25
 
+- iron.nvim, autosave, @-- markdown comments, telescope adjutested to ignore .git folder, neotree to open on file location with folder expanded
+
+
 - iron.nvim
     - got it done in 34 minutes, (that is actually long)
     - wrote below configs #cbb297
@@ -49,7 +52,11 @@ i just need to clone my github
 - adjust neotree to open on file location with folder expanded
     - adjusted 4 lines thanks to grok
 
+- (tmux) toggle to hide the bar
+    - easy
 
+- (nvim) toggle to hide the bar
+    - easy, ( i need a better way to show the changes that happened)
 
 #cbb297 
 
@@ -248,3 +255,8 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 ```
+
+
+
+# 2025-12-01
+- added an alias to android studio

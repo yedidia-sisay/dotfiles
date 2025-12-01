@@ -145,6 +145,15 @@ alias tux='tmux kill-session'
 alias xit='tmux kill-session'
 
 
+alias tree='tree -a '
+
+
+# alias for android studio
+# 2025-12-01
+alias android='/home/geracha/android-studio/bin/studio'
+
+
+
 # set my beloved vim mode on the shell
 set -o vi
 
@@ -456,13 +465,6 @@ read_project_config() {
         esac
     done < "$config_file"
 }
-
-
-
-
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
-
-alias tree='tree -a '
 
 
 
