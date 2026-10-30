@@ -28,7 +28,8 @@ exec --no-startup-id dex --autostart --environment i3
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+# exec_always --no-startup-id xset s 1800  
+# exec_always --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
@@ -49,7 +50,7 @@ floating_modifier $mod
 tiling_drag modifier titlebar
 
 # start a terminal
-bindsym $mod+Return exec kitty
+bindsym $mod+Return exec env GLFW_IM_MODULE=ibus kitty
 
 # kill focused window
 bindsym $mod+q kill
@@ -94,7 +95,7 @@ bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+Shift+f fullscreen toggle
-bindsym $mod+f exec --no-startup-id "/home/geracha/.config/i3/center_window.sh 1920 1080"
+bindsym $mod+f exec --no-startup-id "/home/geracha/.config/i3/center_window.sh 1920 1020"
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
@@ -106,6 +107,8 @@ bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
+
+bindsym $mod+comma exec --no-startup-id ibus_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -161,9 +164,17 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
-exec --no-startup-id ibus-daemon -drx
+# Start iBus (Input Method Framework)
+exec --no-startup-id ibus-daemon -d -r
+
+# Set necessary environment variables for iBus to work in applications
+exec --no-startup-id env XMODIFIERS=@im=ibus exec
+exec --no-startup-id env QT_IM_MODULE=ibus exec
+exec --no-startup-id env GTK_IM_MODULE=ibus exec
 
 # resize window (you can also use the mouse for that)
+
+
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
 
@@ -244,11 +255,11 @@ for_window [class=".*"] floating enable
 # Custom centered windows with different sizes
 bindsym $mod+Shift+n exec --no-startup-id "/home/geracha/.config/i3/center_window.sh 1700 979"
 bindsym $mod+n exec --no-startup-id "/home/geracha/.config/i3/center_window.sh 1200 979"
-bindsym $mod+x exec --no-startup-id "/home/geracha/.config/i3/center_window.sh 894 700"
+# bindsym $mod+x exec --no-startup-id "/home/geracha/.config/i3/center_window.sh 894 700"
 
 # Startup applications
 exec --no-startup-id firefox
-exec --no-startup-id obsidian
+# exec --no-startup-id obsidian
 
 
 # script for battery

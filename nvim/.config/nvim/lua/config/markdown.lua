@@ -1,4 +1,7 @@
 
+
+
+
 local function expand_at_trigger()
   local line = vim.api.nvim_get_current_line()
   local col = vim.api.nvim_win_get_cursor(0)[2]
@@ -16,7 +19,7 @@ local function expand_at_trigger()
   elseif trigger == "today" then
     replacement = os.date("%Y-%m-%d")
   elseif trigger == "date" then
-    replacement = os.date("%d %b %Y")
+    replacement = os.date("%d %b %Y %H:%M:%S")
   elseif trigger == "color" then
     local h = function() return string.format("%02x", math.random(0, 255)) end
     replacement = "#" .. h() .. h() .. h()

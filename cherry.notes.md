@@ -1,10 +1,13 @@
 
 # Agile board
-- (nvim) lsp, with autocompletion and everything (estimated time: 60m)
+- (nvim) understand what i wrote for the lsp
 - (nvim) ai, copilot or gemnini auto suggest (estimated time: 60m)
 - (nvim) set unwrap for markdown
 - (nvim) markdown navigation tools, something i could type and it could take me places
 - (general)  themeing colorscheme, dark theme light theme
+- (nvim) harpoon.lua (estimated time: 15m)
+- (nvim) yazi nvim, yazi
+- (nvim) image.nvim
 
 
 
@@ -14,6 +17,8 @@
 - getting a @today and @now (estimated time: 15m)
 - adjust neotree to open on file location with folder expanded
 - (tmux) toggle to hide the bar
+- (nvim) lsp, with autocompletion and everything (estimated time: 60m)
+- 
 
 
 
@@ -260,3 +265,79 @@ vim.api.nvim_create_autocmd("FileType", {
 
 # 2025-12-01
 - added an alias to android studio
+
+
+
+# 2025-12-14
+
+- working on harpoon, treesitter, and my own plugin
+
+# 2025-12-17
+
+integrated the project projects nasa open feature
+so by just checking the cherry.yaml, we have premade and a configurable session opener, this is a banger aint gonna lie
+
+other is im trying to figure out how the lsp's work
+
+so nvim has actual lsp support
+but you have to configure everything
+so instead of doing that `neovim/nvim-lspconfig` handles that for you 
+
+`mason` is the package manager
+`mason-lspconfig` is the bridge that connects the lspconfig to mason, hanldes ddifferences, and automaitcally loads the lsp when needed
+
+
+lkjls
+
+
+
+# 2026-01-02
+
+Want to solve the problem that my terminal firmly rejects the idea of an amharic keyboard
+
+we failed trying to fix this last time
+this time we are going to try something smarter, gemini, i guess gemini is smarter than the rest
+requested by af, and journal
+
+
+
+```chat
+
+```
+
+
+tasks
+- [x] fix amharic input
+- [x]  fix font
+ - [x] get an i3 toggle 
+ - [x] set linebreak
+ - [ ] get amharic mode in nvim, where if im in amharic, the program recongizes it, and then sets the
+
+
+# 2026-01-03
+Set out to finish the last task that i failed yesterday trying for.
+
+
+
+Made a solution for the last task, 
+it works but it is not perfect
+
+
+
+# 2026-01-04
+
+Made a solution for the last task, but dreamed about an already made solution.
+Searched it found it on grok, or gpt, then installed it rather illy (wated time on some silly thing) and now በሃባማxስ እየጻፍኩ ነው። 
+
+ነገር ግን የመርጥነው ፎንት ዽ፣ dha ፣ አያጽፈንም። እሱ ችግር ግን የለፈን ብለናል ። በተጨማሪም የመረጥነው ፎንት በጣም ፀድ ነው።
+
+እጅ ጽሁፍ ነው ሚመስለው፣ ስንት ለፍቼ እንዳመጣሁትን እኔ ብቻ ነው ማቀው። የሆነ ዌብሳይት አለ የተላያዩ አማርኛ ፎንቶችን በዳታበዝ መልኩ የሚያስቀምጥ፣ ቆዬ አንዴ ፈልጌ ልምጣ፣ 
+
+አልሶ አናዘር problem i want to know if i can edit the ibus engine sera, 
+
+https://www.dafont.com/yonathan.d7187?&page=1&hlf=45745#45745
+this the link for the fonts
+maybe in the future
+
+
+

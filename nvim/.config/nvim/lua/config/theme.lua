@@ -1,12 +1,10 @@
-
-
 require("catppuccin").setup({
     color_overrides = {
         latte = {
             base = "#C2BFB0",
             sapphire = "#209fb6",
             -- mantle = "#e6e9f0",
-            mantle = "#C2bfb8",
+            mantle = "#c2bfb8",
             sky = "#04a5e6",
             maroon = "#e64554",
             -- crust = "#000000",
@@ -25,7 +23,8 @@ require("catppuccin").setup({
             lavender = "#1287fe",
             -- surface1 = "#bcc0cd",
             surface1 = "#28282f",
-            subtext0 = "#6c6f86",
+            -- subtext0 = "#6c6f86",
+            subtext0 = "#e04554",
             green = "#40a02c",
             peach = "#fe640c",
             surface0 = "#ccd0db",
@@ -38,9 +37,16 @@ require("catppuccin").setup({
 
 })
 
+
 vim.cmd.colorscheme("catppuccin")
 
-
-
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "catppuccin-latte",
+  callback = function()
+    vim.api.nvim_set_hl(0, "IlluminatedWordText",  { bg = "#dfdfef" })
+    vim.api.nvim_set_hl(0, "IlluminatedWordRead",  { bg = "#dfdfff" })
+    vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = "#dfdfff" })
+  end,
+})
 
 

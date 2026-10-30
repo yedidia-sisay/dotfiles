@@ -16,12 +16,12 @@
                     -- returns a table (see below)
                     command = {"zsh"}
                   },
-                  python = {
-                    command = { "ipython"  },  -- or { "ipython", "--no-autoindent" }
-                    format = common.bracketed_paste_python,
-                    block_dividers = { "# %%", "#%%" },
-                    env = {PYTHON_BASIC_REPL = "1"} --this is needed for python3.13 and up.
-                  },
+                    python = {
+                      command = { "ipython", "--no-autoindent" },
+                      format = common.bracketed_paste_python,
+                      block_dividers = { "# %%", "#%%" },
+                      env = { PYTHON_BASIC_REPL = "1" }
+                    },
                   kotlin = {
                       command = "kotlinc-jvm",
                       block_dividers = {"// %%" ,"// %%"}

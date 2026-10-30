@@ -1,0 +1,8 @@
+# ~/.config/yazi/yazi.toml
+
+[manager]
+# Set to 'true' to always show hidden files (dotfiles) by default.
+show_hidden = true
+
+
+

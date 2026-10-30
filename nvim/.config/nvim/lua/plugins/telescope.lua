@@ -25,7 +25,7 @@ return {
       builtin.find_files({ hidden = true, no_ignore = true })
     end)
 
-    vim.keymap.set('n', '<leader>pf', builtin.git_files, {})
+    vim.keymap.set('n', '<leader>g', builtin.live_grep, {})
     vim.keymap.set('n', '<leader>ps', function()
       builtin.grep_string({ search = vim.fn.input("Grep > ") })
     end)

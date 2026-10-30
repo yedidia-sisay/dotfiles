@@ -2,6 +2,8 @@
 
 
 
+vim.cmd("set linebreak")
+
 -------------------------------
 -- Beta's
 --
@@ -16,6 +18,7 @@ vim.keymap.set("n", "<leader>b", function()
 end, { desc = "Toggle statusline" })
 
 
+vim.cmd("set linebreak")
 
 -------------------------------
 -- tab expand rules
@@ -73,3 +76,20 @@ vim.keymap.set("n", "<leader>bc", function()
     vim.o.cmdheight = 0
   end
 end, { desc = "Toggle command bar" })
+
+
+
+
+
+
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  pattern = "catppuccin-*",
+  callback = function()
+    local p = require("catppuccin.palettes").get_palette()
+
+    vim.api.nvim_set_hl(0, "IlluminatedWordText",  { bg = p.surface0, underdotted=true })
+    vim.api.nvim_set_hl(0, "IlluminatedWordRead",  { bg = p.surface0 })
+    vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = p.surface0 , underdashed=true})
+  end,
+})

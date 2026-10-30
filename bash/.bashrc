@@ -7,11 +7,7 @@ case $- in
     *i*) ;;
       *) return;;
 esac
-
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
-
+# don't put duplicate lines or lines starting with space in the history. See bash(1) for more options HISTCONTROL=ignoreboth
 # append to the history file, don't overwrite it
 shopt -s histappend
 
@@ -92,6 +88,8 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+
+
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -124,10 +122,11 @@ fi
 # export PATH="$PATH:/opt/nvim"
 
 
+
 # no idea what this are
-export GTK_IM_MODULE=ibus
-export XMODIFIERS=@im=ibus
-export QT_IM_MODULE=ibus
+# export GTK_IM_MODULE=ibus
+# export XMODIFIERS=@im=ibus
+# export QT_IM_MODULE=ibus
 
 # More readable version with your Catppuccin colors
 PS1='\[\033[38;5;67m\]\u@\h:\w\$ \[\033[0m\]'
@@ -141,16 +140,33 @@ alias vim='nvim'
 alias t='tmux'
 
 alias reload='source ~/.bashrc' 
-alias tux='tmux kill-session'
+alias tux='tmux kill-session; exit'
 alias xit='tmux kill-session'
 
 
 alias tree='tree -a '
 
-
+## android
 # alias for android studio
 # 2025-12-01
 alias android='/home/geracha/android-studio/bin/studio'
+
+
+export ANDROID_HOME=$HOME/Android/Sdk
+export ANDROID_SDK_ROOT=$ANDROID_HOME
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+
+# Replace this path with the one you found in Step 1
+export JAVA_HOME="/home/geracha/android-studio/jbr"
+export PATH="$JAVA_HOME/bin:$PATH"
+# end of android related shit
+
+
+
+
+alias pop='project open'
 
 
 
@@ -221,6 +237,9 @@ project() {
         bash "$HOME/code/projects/wizard.sh" "$2"
         echo "yes"
         source "$HOME/code/projects/projects.sh" "$2"
+    elif [[ "$1" == "open" && -n "$2" ]]; then
+        echo "new python dev method, project_nasa"
+        python "$HOME/code/.worktree/projects_nasa/main.py" "open" "$2"
     else
         # Activate existing project
         source "$HOME/code/projects/projects.sh" "$1"
@@ -247,6 +266,7 @@ _project_completion() {
 
 # Register completion
 complete -F _project_completion project
+complete -F _project_completion pop
 
 eval "$(uv generate-shell-completion bash)"
 # ________________ end of cherry project ______________________________
@@ -468,3 +488,78 @@ read_project_config() {
 
 
 
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+
+
+# Force Input Method Modules
+#export GLFW_IM_MODULE=ibus
+#export GTK_IM_MODULE=ibus
+#export QT_IM_MODULE=ibus
+#export XMODIFIERS=@im=ibus
+
+
+
+
+# AppImage aliases (unforutnelty)
+
+alias siyoek="~/AppImages/Sioyek-x86_64.AppImage --new-window"
+. "$HOME/.cargo/env"
+
+. "$HOME/.local/bin/env"
+
+
+# kicad
+# easyeda2kicad wrapper (Unified Library Version)
+get_kicad_part() {
+    if [ -z "$1" ]; then
+        echo "Error: Missing LCSC ID(s)."
+        echo "Usage:   get_kicad_part <LCSC_ID> [LCSC_ID ...]"
+        echo "Example: get_kicad_part C5153643 C2678038 C477933"
+        return 1
+    fi
+
+    # Accept either separate arguments or a single quoted, space-separated list.
+    local -a LCSC_IDS=()
+    local ARG
+    for ARG in "$@"; do
+        local -a PARTS=()
+        read -r -a PARTS <<< "$ARG"
+        LCSC_IDS+=("${PARTS[@]}")
+    done
+
+    local LIB_DIR="$PWD/custom_libs"
+    local OUTPUT_PATH="$LIB_DIR/local_parts"
+    local LCSC_ID
+    local FAILED=0
+
+    # Ensure the custom_libs directory exists before running the tool
+    mkdir -p "$LIB_DIR"
+
+    for LCSC_ID in "${LCSC_IDS[@]}"; do
+        if [[ ! "$LCSC_ID" =~ ^C[0-9]+$ ]]; then
+            echo "Error: Invalid LCSC ID '$LCSC_ID' (expected C followed by digits)." >&2
+            FAILED=1
+            continue
+        fi
+        echo "Fetching $LCSC_ID into local_parts..."
+        if ! easyeda2kicad --full --lcsc_id="$LCSC_ID" --output "$OUTPUT_PATH" --project-relative; then
+            echo "Error: Failed to fetch $LCSC_ID." >&2
+            FAILED=1
+        fi
+    done
+
+    if [ "$FAILED" -ne 0 ]; then
+        echo "One or more parts failed; successful parts were still added."
+        return 1
+    fi
+
+    echo ""
+    echo "✅ Success! All requested parts appended to local_parts."
+    echo "If you haven't already, link this in KiCad Preferences ONCE:"
+    echo "   Symbol:    \${KIPRJMOD}/custom_libs/local_parts.kicad_sym"
+    echo "   Footprint: \${KIPRJMOD}/custom_libs/local_parts.pretty"
+}
