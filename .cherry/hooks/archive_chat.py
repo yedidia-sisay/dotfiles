@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Archive a Codex turn's transcript and final response in .cherry."""
+"""Archive a completed Codex session's transcript and final response in .cherry."""
 
 from __future__ import annotations
 
