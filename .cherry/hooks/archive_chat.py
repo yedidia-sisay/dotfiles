@@ -124,6 +124,8 @@ def main() -> int:
     atomic_write(root / ".cherry" / "chats" / f"chat_{timestamp}.md", "\n".join(chat_lines))
 
     final_message = event.get("last_assistant_message")
+    if not isinstance(final_message, str) or not final_message.strip():
+        final_message = next((text for role, text in reversed(messages) if role == "assistant"), None)
     if isinstance(final_message, str) and final_message.strip():
         report = (
             f"# Session report — {timestamp} Africa/Addis_Ababa\n\n"
