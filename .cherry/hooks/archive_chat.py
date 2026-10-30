@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Archive a completed Codex session's transcript and final response in .cherry."""
+"""Save Codex session transcripts and whole-chat reports independently."""
 
 from __future__ import annotations
 
@@ -52,15 +52,78 @@ def collect_messages(value: object, messages: list[tuple[str, str]]) -> None:
             collect_messages(child, messages)
 
 
-def load_transcript(path: Path) -> tuple[list[tuple[str, str]], str]:
+def load_transcript(path: Path) -> list[tuple[str, str]]:
     messages: list[tuple[str, str]] = []
-    raw = path.read_text(encoding="utf-8", errors="replace")
-    for line in raw.splitlines():
-        try:
-            collect_messages(json.loads(line), messages)
-        except json.JSONDecodeError:
-            continue
-    return messages, raw
+    with path.open(encoding="utf-8", errors="replace") as transcript:
+        for line in transcript:
+            try:
+                collect_messages(json.loads(line), messages)
+            except json.JSONDecodeError:
+                continue
+    return messages
+
+
+def settings_path() -> Path:
+    codex_home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
+    return codex_home / "chat-archive.json"
+
+
+def read_settings() -> dict[str, bool]:
+    try:
+        settings = json.loads(settings_path().read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        settings = {}
+    if not isinstance(settings, dict):
+        settings = {}
+    return {
+        "transcript": bool(settings.get("transcript", True)),
+        "summary": bool(settings.get("summary", True)),
+    }
+
+
+def write_transcript(root: Path, timestamp: str, transcript: Path | None, messages: list[tuple[str, str]]) -> None:
+    lines = [f"# Chat transcript — {timestamp} Africa/Addis_Ababa", ""]
+    if messages:
+        for role, text in messages:
+            lines.extend([f"## {role.title()}", "", text, ""])
+    elif transcript:
+        lines.extend([
+            "The transcript format could not be rendered as Markdown. The complete raw transcript is saved alongside this file as JSONL.",
+            "",
+        ])
+    atomic_write(root / ".cherry" / "chats" / f"chat_{timestamp}.md", "\n".join(lines))
+    if transcript and transcript.is_file():
+        raw_path = root / ".cherry" / "chats" / f"chat_{timestamp}.jsonl"
+        raw_path.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile("wb", dir=raw_path.parent, delete=False) as temp:
+            with transcript.open("rb") as source:
+                shutil.copyfileobj(source, temp)
+            temp_path = Path(temp.name)
+        os.replace(temp_path, raw_path)
+
+
+def write_summary(root: Path, timestamp: str, session_id: str, messages: list[tuple[str, str]]) -> None:
+    final_message = next((text for role, text in reversed(messages) if role == "assistant"), None)
+    if not final_message:
+        return
+    report = (
+        f"# Session report — {timestamp} Africa/Addis_Ababa\n\n"
+        f"Session: `{session_id}`\n\n"
+        f"{final_message.strip()}\n"
+    )
+    atomic_write(root / ".cherry" / "sessions" / f"report_{timestamp}.md", report)
+
+
+def update_setting(name: str, enabled: bool) -> int:
+    if name not in {"transcript", "summary"}:
+        print("Choose 'transcript' or 'summary'.", file=sys.stderr)
+        return 2
+    path = settings_path()
+    settings = read_settings()
+    settings[name] = enabled
+    atomic_write(path, json.dumps(settings, indent=2, sort_keys=True) + "\n")
+    print(json.dumps(settings, indent=2, sort_keys=True))
+    return 0
 
 
 def atomic_write(path: Path, content: str) -> None:
@@ -90,6 +153,23 @@ def get_archive_timestamp(root: Path, session_id: str) -> str:
 
 
 def main() -> int:
+    args = sys.argv[1:]
+    if args == ["status"]:
+        print(json.dumps(read_settings(), indent=2, sort_keys=True))
+        return 0
+    if len(args) == 2 and args[0] in {"enable", "disable"}:
+        return update_setting(args[1], args[0] == "enable")
+    if len(args) != 1 or args[0] not in {"transcript", "summary"}:
+        print(
+            "Usage: archive_chat.py {transcript|summary} | status | enable {transcript|summary} | disable {transcript|summary}",
+            file=sys.stderr,
+        )
+        return 2
+    action = args[0]
+    if not read_settings().get(action, False):
+        print("{}")
+        return 0
+
     try:
         event = json.load(sys.stdin)
     except (json.JSONDecodeError, ValueError):
@@ -107,32 +187,12 @@ def main() -> int:
     transcript = Path(transcript_path) if isinstance(transcript_path, str) else None
     messages: list[tuple[str, str]] = []
     if transcript and transcript.is_file():
-        messages, raw_transcript = load_transcript(transcript)
-        # Keep the original event stream as a faithful fallback if the release
-        # changes the transcript structure beyond this Markdown renderer.
-        atomic_write(root / ".cherry" / "chats" / f"chat_{timestamp}.jsonl", raw_transcript)
+        messages = load_transcript(transcript)
 
-    chat_lines = [f"# Chat transcript — {timestamp} Africa/Addis_Ababa", ""]
-    if messages:
-        for role, text in messages:
-            chat_lines.extend([f"## {role.title()}", "", text, ""])
-    elif transcript:
-        chat_lines.extend([
-            "The transcript format could not be rendered as Markdown. The complete raw transcript is saved alongside this file as JSONL.",
-            "",
-        ])
-    atomic_write(root / ".cherry" / "chats" / f"chat_{timestamp}.md", "\n".join(chat_lines))
-
-    final_message = event.get("last_assistant_message")
-    if not isinstance(final_message, str) or not final_message.strip():
-        final_message = next((text for role, text in reversed(messages) if role == "assistant"), None)
-    if isinstance(final_message, str) and final_message.strip():
-        report = (
-            f"# Session report — {timestamp} Africa/Addis_Ababa\n\n"
-            f"Session: `{session_id}`\n\n"
-            f"{final_message.strip()}\n"
-        )
-        atomic_write(root / ".cherry" / "sessions" / f"report_{timestamp}.md", report)
+    if action == "transcript":
+        write_transcript(root, timestamp, transcript, messages)
+    else:
+        write_summary(root, timestamp, session_id, messages)
 
     print("{}")
     return 0
