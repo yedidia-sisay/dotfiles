@@ -22,7 +22,8 @@ def find_repo_root(cwd: str) -> Path | None:
     for candidate in (current, *current.parents):
         if (candidate / ".git").exists():
             return candidate
-    return None
+    # For non-Git Codex workspaces, archive at the session's working directory.
+    return current if current.is_dir() else None
 
 
 def extract_text(value: object) -> str:
